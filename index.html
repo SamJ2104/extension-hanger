@@ -190,84 +190,48 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const slider = document.getElementById("iframeCountSlider");
-    const sliderValueDisplay = document.getElementById("iframeCountValue");
-    const deviceMemory = navigator.deviceMemory || 8; // It will be set to 8gb if you're in the data url, since navigator isnt supported.
-    const defaultIframeCount = Math.round(deviceMemory * 500);  // This changes the default value of the iframe slider based on how much memory your computer has
-    const maxIframeCount = Math.round(deviceMemory * 1500);
+      const slider = document.getElementById("iframeCountSlider");
+      const sliderValueDisplay = document.getElementById("iframeCountValue");
+      const deviceMemory = navigator.deviceMemory || 8;
+      console.log("Device memory:", deviceMemory);
+      const defaultIframeCount = Math.round(deviceMemory * 500);
+      console.log("Default iframe count:", defaultIframeCount);
+      const maxIframeCount = Math.round(deviceMemory * 1500);
+      console.log("Max iframe count:", maxIframeCount);
 
-    slider.value = defaultIframeCount;
-    slider.max = maxIframeCount;
-    sliderValueDisplay.textContent = defaultIframeCount;
+      slider.value = defaultIframeCount;
+      slider.max = maxIframeCount;
+      sliderValueDisplay.textContent = defaultIframeCount;
 
-    slider.addEventListener("input", function () {
-      sliderValueDisplay.textContent = this.value;
+      slider.addEventListener("input", function () {
+        console.log("Slider value:", this.value);
+        sliderValueDisplay.textContent = this.value;
+      });
     });
-  });
-  
-  	document.getElementById("iframeCountSlider").addEventListener("input", function () {
-  	  const iframeCountValue = document.getElementById("iframeCountValue");
- 	  iframeCountValue.textContent = this.value;
-    });
-  
+
     async function checkExtensionURL(url) {
+      console.log("Checking extension URL:", url);
       try {
         const response = await fetch(url);
-        if (response.ok) {
-          return true;
-        } else {
-          return true;
-        }
+        console.log("Response status:", response.status);
+        return response.ok;
       } catch (error) {
-        return true;
+        console.error("Error checking URL:", error);
+        return false;
       }
     }
 
     async function populateSelectOptions() {
       const selectElement = document.getElementById("iframeSelect");
       const extensions = {
-	"UBO (TEST)": "chrome-extension://ddkjiahejlhfcafbddmgiahcphecmpfh/dashboard.html",
-	"Smoothwall Filter MV2": "chrome-extension://nlcnbnnmbfgekccnapcfjpoofnoblfpk/views/diagnostics.html",
-	"Smoothwall Filter MV1": "chrome-extension://jbldkhfglmgeihlcaeliadhipokhocnm/views/diagnostics.html",
-	"Securly (1st ID)": "chrome-extension://joflmkccibkooplaeoinecjbmdebglab/fonts/Metropolis.css",
-	"Securly (2nd ID)": "chrome-extension://ckecmkbnoanpgplccmnoikfmpcdladkc/fonts/Metropolis.css",
-        "Securly (old)": "chrome-extension://iheobagjkfklnlikgihanlhcddjoihkg/fonts/Metropolis.css",
-        "GoGuardian": "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/youtube_injection.js",
-        "LANSchool": "chrome-extension://baleiojnjpgeojohhhfbichcodgljmnj/blocked.html",
-        "Linewize": "chrome-extension://ddfbkhpmcdbciejenfcolaaiebnjcbfc/background/assets/pages/default-blocked.html",
-        "Blocksi": "chrome-extension://ghlpmldmjjhmdgmneoaibbegkjjbonbk/pages/blockPage.html",
-        "FortiGuard": "chrome-extension://igbgpehnbmhgdgjbhkkpedommgmfbeao/youtube_injection.js",
-        "Cisco Umbrella": "chrome-extension://jcdhmojfecjfmbdpchihbeilohgnbdci/blocked.html",
-        "ContentKeeper": "chrome-extension://jdogphakondfdmcanpapfahkdomaicfa/img/ckauth19x.png",
-        "CK-Authenticator G3": "chrome-extension://odoanpnonilogofggaohhkdkdgbhdljp/img/ckauth19x.png",
-        "Securly Classroom": "chrome-extension://jfbecfmiegcjddenjhlbhlikcbfmnafd/notfound.html",
-        "Hapara": "chrome-extension://kbohafcopfpigkjdimdcdgenlhkmhbnc/blocked.html",
-        "Hapara (new ID)": "chrome-extension://aceopacgaepdcelohobicpffbbejnfac/blocked.html",
-        "iboss": "chrome-extension://kmffehbidlalibfeklaefnckpidbodff/restricted.html",
-        "Lightspeed Digital Insight Agent": "chrome-extension://njdniclgegijdcdliklgieicanpmcngj/js/wasm_exec.js",
-        "Lightspeed Filter Agent": "chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/icon-128.png",
-        "Lightspeed Classroom": "chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png",
-        "InterCLASS Filtering Service": "chrome-extension://jbddgjglgkkneonnineaohdhabjbgopi/pages/message-page.html",
-        "InterSafe GatewayConnection Agent": "chrome-extension://ecjoghccnjlodjlmkgmnbnkdcbnjgden/resources/options.js",
-        "LoiLo Web Filters": "chrome-extension://pabjlbjcgldndnpjnokjakbdofjgnfia/image/allow_icon/shield_green_128x128.png",
-        "Gopher Buddy": "chrome-extension://cgbbbjmgdpnifijconhamggjehlamcif/images/gopher-buddy_128x128_color.png",
-        "LanSchool Web Helper": "chrome-extension://honjcnefekfnompampcpmcdadibmjhlk/blocked.html",
-        "IMTLazarus": "chrome-extension://cgigopjakkeclhggchgnhmpmhghcbnaf/models/model.json",
-        "Impero Backdrop": "chrome-extension://jjpmjccpemllnmgiaojaocgnakpmfgjg/licenses.html",
-        "Mobile Guardian": "chrome-extension://fgmafhdohjkdhfaacgbgclmfgkgokgmb/block.html",
-        "NetSupport School Student": "chrome-extension://gcjpefhffmcgplgklffgbebganmhffje/_locales/lt/messages.json",
-        "Lightspeed Alert Agent": "chrome-extension://gcjpefhffmcgplgklffgbebganmhffje/_locales/lt/main.js",
-        "Lightspeed Alert Agent 2": "chrome-extension://gcjpefhffmcgplgklffgbebganmhffje/_locales/lt/in_page.js",
-        "Lockdown Browser": "chrome-extension://fogjeanjfbiombghnmkmmophfeccjdki/manifest.json",
-        "Linewize Filter": "chrome-extension://ifinpabiejbjobcphhaomiifjibpkjlf/background/assets/pages/default-blocked.html",
-        "Borderless Classroom Student": "chrome-extension://kdpgkligilplaanoablcpjahjjeghcl/pages/blockPage.html",
-	"LockDown Browser AP Classroom Edition": "chrome-extension://djpknfecbncogekjnjppojlaipeobkmo/assets/images/icon_128.png",
-	"Lugus School": "chrome-extension://eoobggamkobbcpiojefejfglbfcacgca/assets/images/icon_128.png",
+        "UBO (TEST)": "chrome-extension://ddkjiahejlhfcafbddmgiahcphecmpfh/dashboard.html",
       };
+      console.log("Extensions:", extensions);
 
       let hasSupportedExtensions = false;
 
       for (const [name, url] of Object.entries(extensions)) {
+        console.log("Checking extension:", name);
         if (await checkExtensionURL(url)) {
           const option = document.createElement("option");
           option.value = url;
@@ -278,6 +242,7 @@
       }
 
       if (!hasSupportedExtensions) {
+        console.warn("No supported extensions installed.");
         const option = document.createElement("option");
         option.value = "";
         option.textContent = "No supported extensions installed";
@@ -289,6 +254,7 @@
     populateSelectOptions();
 
     function replaceIframes(container, iframeSrc, iframeCount) {
+      console.log("Replacing iframes with source:", iframeSrc, "Count:", iframeCount);
       for (let i = 0; i < iframeCount; i++) {
         const iframe = document.createElement('iframe');
         iframe.src = iframeSrc;
@@ -310,7 +276,10 @@
       const iframeSelect = document.getElementById("iframeSelect");
       const selectedOption = iframeSelect.options[iframeSelect.selectedIndex].text;
       const selectedSrc = iframeSelect.value;
+      console.log("Selected option:", selectedOption);
+      console.log("Selected source:", selectedSrc);
       const iframeCount = parseInt(document.getElementById("iframeCountSlider").value, 10);
+      console.log("Iframe count:", iframeCount);
       const popup = window.open("", "PopupWindow", "width=100,height=100");
       const popupDocument = popup.document;
       const popupBody = popupDocument.body;
@@ -333,13 +302,16 @@
           document.getElementById("iframeCountValue").style.display = "none";
           document.getElementById("labelForIframeSlider").style.display = "none";
           document.getElementById("killButton").setAttribute("data-url", selectedSrc);
+          console.log("Kill button URL set to:", selectedSrc);
         }, 10000);
       }, 5000);
     }
 
     function openExtensionPopup() {
       const selectedSrc = document.getElementById("killButton").getAttribute("data-url");
+      console.log("Opening extension popup for source:", selectedSrc);
       const extensionId = selectedSrc.substring(selectedSrc.indexOf("//") + 2, selectedSrc.indexOf("/", selectedSrc.indexOf("//") + 2));
+      console.log("Extracted extension ID:", extensionId);
       const killExtensionText = document.getElementById("killExtensionText");
       document.getElementById("killButton").style.display = "none";
       killExtensionText.innerHTML = "Make sure to keep this tab open. Then open <strong>chrome://extensions/?id=" + extensionId + "</strong> and flip the switch called \"Allow access to file URLs\" twice. The extension was successfully killed! Now you can close that tab as well as this one. If you want to restore the extension, flip the allow access to file URLs switch again.";
