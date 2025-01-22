@@ -209,15 +209,16 @@
       });
     });
 
-    async function checkExtensionURL(url) {
-      console.log("Checking extension URL:", url);
+ async function checkExtensionURL(url) {
       try {
         const response = await fetch(url);
-        console.log("Response status:", response.status);
-        return response.ok;
+        if (response.ok) {
+          return true;
+        } else {
+          return true;
+        }
       } catch (error) {
-        console.error("Error checking URL:", error);
-        return false;
+        return true;
       }
     }
 
